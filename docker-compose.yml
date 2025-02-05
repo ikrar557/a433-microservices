@@ -7,37 +7,23 @@ services:
   item-db:
     # Mengambil image mongodb dari 'Docker Hub' secara eksplisit dengan menambahkan URL 'docker.io'
     image: docker.io/mongo:3
-    # Menentukan port yang akan digunakan oleh container
-    ports:
-      - 27017:27017
     # Menggunakan 'persistent volume' bernama 'app-db' dengan target '/data/db' di dalam container
     volumes:
       - app-db:/data/db 
     # Menambahkan policy agar container selalu 'restart' ketika berhenti
     restart: always
 
-  # Menjalan service atau container dengan nama 'item-app'
+  # Menjalankan service atau container dengan nama 'item-app'
   item-app:
-    # Mengambil image 'item-app' yang sebelumnya sudah di push ke Github Packages secara eksplisit
-    # Dengan menggunakan URL 'ghcr.io'
+    # Mengambil image 'item-app' yang sebelumnya sudah di push ke Github Packages
+    # Secara eksplisit dengan menggunakan URL 'ghcr.io'
     image: ghcr.io/ikrar557/item-app:v1
-    # Menginstall dependencies dan menjalankan aplikasi
-    command: sh -c "npm install --production --unsafe-perm && npm start"
-    # Menentukan 'direktori kerja' pada container 'item-app'
-    working_dir: /app
     # Menentukan port yang akan digunakan oleh container
     ports:
-      - 80:8080
-    # Melakukan bind mount direktori saat ini ke dalam direktori '/app' di container
-    volumes:
-      - ./:/app
-    # Membuat policy agar container 'item-app' berjalan setelah container 'item-db' dapat dijalankan
+      - 80:8080 
+    # Membuat policy agar container 'item-app' berjalan setelah container 'item-db' dapat dijalankan  
     depends_on:
       - item-db
-    # Menambahkan 'environment' yang akan digunakan oleh container
-    environment:
-      - NODE_ENV=production
-      - DB_HOST=item-db
     # Menambahkan policy agar container selalu 'restart' ketika berhenti
     restart: always
 
