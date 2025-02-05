@@ -19,4 +19,4 @@ gulp.task('scripts', function () {
 });
 
 // default task
-gulp.task('default', gulp.series('scripts'));
+gulp.task('default', ['scripts']);
