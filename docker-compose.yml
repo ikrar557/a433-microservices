@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  item-db:
+    image: docker.io/mongo:3
+    ports:
+      - 27017:27017
+    volumes:
+      - app-db:/data/db  
+    restart: always
+
+  item-app:
+    image: ghcr.io/ikrar557/item-app:v1
+    command: sh -c "npm install --production --unsafe-perm && npm start"
+    working_dir: /app
+    ports:
+      - 80:8080
+    volumes:
+      - ./:/app
+    depends_on:
+      - item-db
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=item-db
+    restart: always
+
+volumes:
+  app-db:
