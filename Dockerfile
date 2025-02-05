@@ -7,10 +7,10 @@ WORKDIR /app
 # Menyalin seluruh file dan direktori dari host ke dalam container
 COPY . /app/
 
-# Mendifinisikan variabel environment untuk production dan menggunakan container bernama 'item-db' sebagai database host
+# Menentukan agar aplikasi berjalan dalam production mode dan menggunakan container bernama 'item-db' sebagai database host
 ENV NODE_ENV=production DB_HOST=item-db
 
-# Menginstall dependencies dan menjalankan build untuk aplikasi
+# Menginstall dependencies dan menjalankan build aplikasi
 RUN npm install --production --unsafe-perm && npm run build
 
 # Mengekspos port 8080 untuk aplikasi agar dapat diakses dari luar container
