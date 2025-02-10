@@ -1,0 +1,51 @@
+version: 2.1
+
+jobs:
+  lint-dockerfile:
+    docker:
+      - image: ubuntu:latest
+    steps:
+      - checkout
+      - run:
+          name: Install Hadolint
+          command: |
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+            chmod +x /bin/hadolint
+      - run:
+          name: Lint Dockerfile
+          command: hadolint Dockerfile
+
+  test-app:
+    docker:
+      - image: cimg/go:1.19
+    steps:
+      - checkout
+      - run:
+          name: Run Tests
+          command: go test -v -short --count=1 $(go list ./...)
+
+  build-app-karsajobs:
+    docker:
+      - image: cimg/go:1.19
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build and Push Image
+          command: |
+            docker build -t ghcr.io/${GITHUB_USERNAME}/karsajobs:latest .
+            echo $GITHUB_TOKEN | docker login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
+            docker push ghcr.io/${GITHUB_USERNAME}/karsajobs:latest
+
+workflows:
+  version: 2
+  backend-pipeline:
+    jobs:
+      - lint-dockerfile
+      - test-app:
+          requires:
+            - lint-dockerfile
+      - build-app-karsajobs:
+          requires:
+            - test-app
+          context: github-credentials
