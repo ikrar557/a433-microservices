@@ -15,14 +15,22 @@ spec:
     spec:
       containers:
       - name: karsajobs-ui
+        env:
+        - name: HOST
+          value: "0.0.0.0"
+        - name: NODE_ENV
+          value: "production"
+        - name: VUE_APP_BACKEND
+          # TODO: Update the value to be dynamic and fetch from clusterIP
+          value: "http://10.105.21.240:8080"
         image: ghcr.io/ikrar557/karsajobs-ui:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "250m"
+            memory: "512Mi"
+            cpu: "500m"
           limits:
-            memory: "128Mi"
+            memory: "512Mi"
             cpu: "500m"
