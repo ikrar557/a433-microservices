@@ -16,13 +16,8 @@ spec:
       containers:
       - name: karsajobs-ui
         env:
-        - name: HOST
-          value: "0.0.0.0"
-        - name: NODE_ENV
-          value: "production"
         - name: VUE_APP_BACKEND
-          # TODO: Update the value to be dynamic and fetch from clusterIP
-          value: "http://10.105.21.240:8080"
+          value: "http://localhost:30081"
         image: ghcr.io/ikrar557/karsajobs-ui:latest
         imagePullPolicy: IfNotPresent
         ports:

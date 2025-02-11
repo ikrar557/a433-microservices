@@ -23,7 +23,9 @@ spec:
         - name: APP_PORT
           value: "8080"
         - name: MONGO_HOST
-          value: mongodb-service
+          value: "mongodb-service"
+        - name: MONGO_DB
+          value: "karsajobs"
         - name: MONGO_USER
           valueFrom:
             secretKeyRef:
