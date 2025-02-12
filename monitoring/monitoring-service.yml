@@ -1,28 +1,30 @@
-apiVersion: v1
-kind: Service
+apiVersion: v1              # Versi API Kubernetes yang digunakan
+kind: Service              # Jenis resource untuk layanan
 metadata:
-  name: prometheus-server
-  namespace: monitoring
+  name: prometheus-server  # Menentukan nama Service Prometheus
+  namespace: monitoring    # Namespace untuk monitoring
 spec:
-  type: NodePort
+  type: NodePort          # Tipe Service bisa diakses dari luar cluster
   ports:
-    - port: 80
-      targetPort: 9090
-      nodePort: 30090
-  selector:
-    app.kubernetes.io/name: prometheus
+    - name: prometheus-port  # Menentukan nama port
+      port: 9090            # Port yang digunakan untuk komunikasi internal dalam cluster kubernetes
+      targetPort: 9090      # Port dalam container yang menerima traffic dari Service
+      nodePort: 30090       # Port pada node yang akan digunakan untuk mengakses Service dari external
+  selector:                # Selektor untuk memilih pod
+    app.kubernetes.io/name: prometheus  # Label pod Prometheus
 ---
-apiVersion: v1
-kind: Service
+apiVersion: v1            # Versi API untuk Service kedua
+kind: Service            # Jenis resource untuk layanan
 metadata:
-  name: grafana
-  namespace: monitoring
+  name: grafana          # Menentukan nama Service Grafana
+  namespace: monitoring  # Namespace untuk monitoring
 spec:
-  type: NodePort
+  type: NodePort        # Tipe Service bisa diakses dari luar
   ports:
-    - port: 80
-      targetPort: 3000
-      nodePort: 30091
-  selector:
-    app.kubernetes.io/instance: grafana
-    app.kubernetes.io/name: grafana
+    - name: grafana-port # Menentukan nama port
+      port: 3000         # Port yang digunakan untuk komunikasi internal dalam cluster kubernetes
+      targetPort: 3000   # Port dalam container yang menerima traffic dari Service
+      nodePort: 30091    # Port pada node yang akan digunakan untuk mengakses Service dari external
+  selector:             # Selektor untuk memilih pod
+    app.kubernetes.io/instance: grafana  # Label instance Grafana
+    app.kubernetes.io/name: grafana      # Label nama Grafana

@@ -1,23 +1,23 @@
-apiVersion: v1
-kind: PersistentVolume
+apiVersion: v1           # Versi API Kubernetes yang digunakan
+kind: PersistentVolume  # Jenis resource untuk penyimpanan persisten
 metadata:
-  name: mongodb-pv
+  name: mongodb-pv      # Nama PersistentVolume
 spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /data/mongodb
+  capacity:             # Kapasitas penyimpanan
+    storage: 1Gi        # Ukuran penyimpanan di atur 1 Gigabyte
+  accessModes:          # Mode akses penyimpanan
+    - ReadWriteOnce     # Mengatur akses agar bisa diakses oleh satu node
+  hostPath:             # Tipe penyimpanan menggunakan hostPath
+    path: /data/mongodb # Lokasi penyimpanan di host
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: v1               # Versi API Kubernetes yang digunakan
+kind: PersistentVolumeClaim  # Jenis resource untuk klaim penyimpanan
 metadata:
-  name: mongodb-pvc
-  namespace: deployments
+  name: mongodb-pvc          # Nama PersistentVolumeClaim
+  namespace: deployments     # Namespace tempat PVC dibuat
 spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
+  accessModes:              # Menentukan mode akses yang diminta
+    - ReadWriteOnce         # Mengatur akses agar bisa diakses oleh satu node
+  resources:                # Menentukan resources yang diminta
     requests:
-      storage: 1Gi
+      storage: 1Gi          # Request penyimpanan 1 Gigabyte

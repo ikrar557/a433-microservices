@@ -1,31 +1,33 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1  # Menentukan versi API yang digunakan
+kind: Deployment  # Menentukan resources yang akan dibuat adalah Deployment
 metadata:
-  name: karsajobs-ui
-  namespace: deployments
+  name: karsajobs-ui  # Nama Deployment yang digunakan
+  namespace: deployments  # Namespace tempat Deployment ini akan dibuat
+
 spec:
-  replicas: 1
+  replicas: 1  # Menentukan jumlah pod yang akan dijalankan
   selector:
     matchLabels:
-      app: karsajobs-ui
-  template:
+      app: karsajobs-ui  # Memilih pod dengan label ini
+  template:  # Template yang digunakan untuk membuat pod
     metadata:
       labels:
-        app: karsajobs-ui
+        app: karsajobs-ui  # Label yang diberikan ke pod
     spec:
       containers:
-      - name: karsajobs-ui
+      - name: karsajobs-ui  # Nama container
         env:
         - name: VUE_APP_BACKEND
-          value: "http://localhost:30081"
-        image: ghcr.io/ikrar557/karsajobs-ui:latest
-        imagePullPolicy: IfNotPresent
+          value: "http://localhost:30081"  # URL backend yang digunakan oleh frontend 
+        image: ghcr.io/ikrar557/karsajobs-ui:latest  # Image container yang digunakan
+        imagePullPolicy: IfNotPresent  # Menentukan imagePullPolicy dimana image akan di-'pull' jika tidak terdapat pada local
         ports:
-        - containerPort: 8000
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - containerPort: 8000  # Port yang dibuka dalam container
+
+        resources:  # Menentukan limit dan request resources CPU dan memori untuk container
+          requests:  # Permintaan minimal resources yang digunakan
+            memory: "256Mi"  # Minimal 256MiB memori
+            cpu: "500m"  # Minimal 500 millicore CPU
+          limits:  # Batas maksimal esources yang digunakan
+            memory: "512Mi"  # Maksimal 512MiB memori
+            cpu: "800m"  # Maksimal 800 millicore CPU

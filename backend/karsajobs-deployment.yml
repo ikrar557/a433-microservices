@@ -1,45 +1,48 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1  # Menentukan versi API yang digunakan
+kind: Deployment  # Menentukan resources yang akan dibuat adalah Deployment
 metadata:
-  name: karsajobs
-  namespace: deployments
+  name: karsajobs  # Nama Deployment yang digunakan 
+  namespace: deployments  # Namespace tempat Deployment ini akan dibuat
+
 spec:
-  replicas: 1
+  replicas: 1  # Menentukan jumlah pod yang akan dijalankan
   selector:
     matchLabels:
-      app: karsajobs
-  template:
+      app: karsajobs  # Memilih pod dengan label ini
+  template:  # Template yang digunakan untuk membuat pod
     metadata:
       labels:
-        app: karsajobs
+        app: karsajobs  # Label yang diberikan ke pod
     spec:
       containers:
-      - name: karsajobs
-        image: ghcr.io/ikrar557/karsajobs:latest
-        imagePullPolicy: IfNotPresent
+      - name: karsajobs  # Nama container 
+        image: ghcr.io/ikrar557/karsajobs:latest  # Image container yang digunakan
+        imagePullPolicy: IfNotPresent  # Menentukan imagePullPolicy dimana image akan di-'pull' jika tidak terdapat pada local
         ports:
-        - containerPort: 8080
-        env:
+        - containerPort: 8080  # Port yang digunakan dalam container
+
+        env:  # Daftar environment variables yang digunakan dalam container
         - name: APP_PORT
-          value: "8080"
+          value: "8080"  # Menentukan port aplikasi yang akan digunakan
         - name: MONGO_HOST
-          value: "mongodb-service"
+          value: "mongodb-service"  # Menentukan host database MongoDB
         - name: MONGO_DB
-          value: "karsajobs"
+          value: "karsajobs"  # Nama database yang digunakan dalam MongoDB
         - name: MONGO_USER
           valueFrom:
             secretKeyRef:
-              name: mongodb-secret
+              name: mongodb-secret  # Mengambil username MongoDB dari Secret Kubernetes (mongo-secret.yml)
               key: MONGO_ROOT_USERNAME
         - name: MONGO_PASS
           valueFrom:
             secretKeyRef:
-              name: mongodb-secret
+              name: mongodb-secret  # Mengambil password MongoDB dari Secret Kubernetes (mongo-secret.yml)
               key: MONGO_ROOT_PASSWORD
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+
+        resources:  # Menentukan limit dan request resources CPU dan memori untuk container
+          requests:  # Permintaan minimal resources yang digunakan
+            memory: "64Mi"  # Minimal 64MiB memori
+            cpu: "250m"  # Minimal 250 millicore CPU
+          limits:  # Batas maksimal esources yang digunakan
+            memory: "128Mi"  # Maksimal 128MiB memori
+            cpu: "500m"  # Maksimal 500 millicore CPU

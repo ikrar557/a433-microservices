@@ -1,43 +1,50 @@
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: apps/v1         # Versi API Kubernetes yang digunakan
+kind: StatefulSet           # Jenis resource untuk aplikasi stateful
 metadata:
-  name: mongodb
-  namespace: deployments
+  name: mongodb             # Nama StatefulSet
+  namespace: deployments    # Namespace tempat StatefulSet dibuat
 spec:
-  serviceName: mongodb-service
-  replicas: 1
+  serviceName: mongodb-service  # Nama service yang digunakan
+  replicas: 1              # Jumlah replica pod yang diinginkan
   selector:
-    matchLabels:
-      app: mongodb
-  template:
+    matchLabels:           # Label untuk memilih pod
+      app: mongodb         # Label yang harus sesuai
+  template:                # Template untuk membuat pod
     metadata:
-      labels:
-        app: mongodb
+      labels:              # Label yang diberikan ke pod
+        app: mongodb       # Label pod
     spec:
       containers:
-      - name: mongodb
-        image: mongo:latest
+      - name: mongodb     # Nama container
+        image: mongo:latest  # Gambar Docker yang digunakan
+        resources:        # Resource yang dibutuhkan
+          requests: 
+            memory: "512Mi"  # Memori minimum yang dinginkan
+            cpu: "500m"      # CPU minimum yang dinginkan
+          limits:
+            memory: "1Gi"    # Memori maksimum yang disediakan
+            cpu: "1000m"     # CPU maksimum yang disediakan
         ports:
-        - containerPort: 27017
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+        - containerPort: 27017  # Port yang dibuka di container
+        env:               # Environment variables yang akan digunakan
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE    # Berkas untuk mengambil value username MongoDB
           value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
-        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE    # Berkas untuk mengambil value File untuk password MongoDB
           value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
-        volumeMounts:
-        - name: mongodb-data
-          mountPath: /data/db
-        - name: mongodb-config
-          mountPath: /config
-        - name: mongodb-secret
-          mountPath: /etc/mongo-credentials
-      volumes:
-      - name: mongodb-data
-        persistentVolumeClaim:
-          claimName: mongodb-pvc
-      - name: mongodb-config
-        configMap:
-          name: mongodb-config
-      - name: mongodb-secret
-        secret:
-          secretName: mongodb-secret
+        volumeMounts:      # Mount volume ke container
+        - name: mongodb-data    # Volume untuk data MongoDB
+          mountPath: /data/db   # Lokasi mount di container
+        - name: mongodb-config  # Volume untuk konfigurasi
+          mountPath: /config    # Lokasi mount konfigurasi
+        - name: mongodb-secret  # Volume untuk kredensial
+          mountPath: /etc/mongo-credentials  # Lokasi mount kredensial
+      volumes:             # Definisi volume yang digunakan
+      - name: mongodb-data     # Volume untuk data
+        persistentVolumeClaim: # Menggunakan PVC
+          claimName: mongodb-pvc  # Nama PVC yang digunakan
+      - name: mongodb-config   # Volume untuk konfigurasi
+        configMap:             # Menggunakan ConfigMap
+          name: mongodb-config # Nama ConfigMap
+      - name: mongodb-secret   # Volume untuk kredensial
+        secret:               # Menggunakan Secret
+          secretName: mongodb-secret  # Nama Secret

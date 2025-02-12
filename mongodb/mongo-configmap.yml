@@ -1,9 +1,11 @@
-apiVersion: v1
-kind: ConfigMap
+apiVersion: v1      # Versi API Kubernetes yang digunakan
+kind: ConfigMap     # Jenis resource untuk menyimpan konfigurasi
 metadata:
-  name: mongodb-config
-  namespace: deployments
+  name: mongodb-config    # Nama ConfigMap
+  namespace: deployments  # Namespace tempat ConfigMap dibuat
 data:
-  mongo.conf: |
+  mongo.conf: |          # Konfigurasi MongoDB
+# Konfigurasi penyimpanan MongoDB
     storage:
-      dbPath: /data/db
+      # Lokasi penyimpanan data MongoDB
+      dbPath: /data/db   

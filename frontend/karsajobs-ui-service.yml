@@ -1,13 +1,14 @@
-apiVersion: v1
-kind: Service
+apiVersion: v1 # Menentukan versi API yang digunakan
+kind: Service # Menentukan resources yang akan dibuat adalah Service
 metadata:
-  name: karsajobs-ui
-  namespace: deployments
+  name: karsajobs-ui # Nama Service yang digunakan
+  namespace: deployments # Namespace tempat Service ini akan dibuat
 spec:
-  type: NodePort
+  type: NodePort # Jenis Service yang digunakan
   ports:
-  - port: 8000
-    targetPort: 8000
-    nodePort: 30080
+  - port: 8000 # Port yang digunakan untuk komunikasi internal dalam cluster kubernetes
+    targetPort: 8000 # Port dalam container yang menerima traffic dari Service
+    nodePort: 30080 # Port pada node yang akan digunakan untuk mengakses Service dari external
+
   selector:
-    app: karsajobs-ui
+    app: karsajobs-ui # Menentukan pod yang akan menerima traffic

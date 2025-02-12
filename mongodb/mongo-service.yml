@@ -1,12 +1,12 @@
-apiVersion: v1
-kind: Service
+apiVersion: v1           # Versi API Kubernetes yang digunakan
+kind: Service           # Jenis resource untuk layanan
 metadata:
-  name: mongodb-service
-  namespace: deployments
+  name: mongodb-service # Nama Service
+  namespace: deployments # Namespace tempat Service dibuat
 spec:
-  type: ClusterIP
-  selector:
-    app: mongodb
-  ports:
-    - port: 27017
-      targetPort: 27017
+  type: ClusterIP      # Tipe Service yang digunakan 
+  selector:            # Selektor untuk memilih pod
+    app: mongodb       # Label pod yang akan digunakan
+  ports:               # Konfigurasi port
+    - port: 27017      # Port yang digunakan untuk komunikasi internal dalam cluster kubernetes
+      targetPort: 27017 # Port dalam container yang menerima traffic dari Service
