@@ -1,44 +1,44 @@
-version: 2.1
+version: 2.1    # Menentukan versi CircleCI yang digunakan
 
-jobs:
-  lint-dockerfile:
-    docker:
-      - image: ubuntu:latest
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apt-get update
-            apt-get install -y wget
-      - run:
-          name: Install Hadolint
-          command: |
-            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
-            chmod +x /bin/hadolint
-      - run:
-          name: Lint Dockerfile
-          command: hadolint Dockerfile
+jobs:    # Mendefinisikan pekerjaan yang akan dijalankan
+  lint-dockerfile:    # Membuat job untuk melakukan linting pada Dockerfile
+    docker:    # Menentukan image Docker yang digunakan
+      - image: ubuntu:latest    # Menggunakan image Ubuntu versi terbaru
+    steps:    # Langkah-langkah yang akan dijalankan
+      - checkout    # Mengambil kode dari repository
+      - run:    # Menjalankan perintah
+          name: Install dependencies    # Nama langkah untuk instalasi dependensi
+          command: |    # Perintah yang akan dijalankan
+            apt-get update    # Memperbarui package list
+            apt-get install -y wget    # Menginstall wget
+      - run:    # Menjalankan perintah kedua
+          name: Install Hadolint    # Nama langkah untuk instalasi Hadolint
+          command: |    # Perintah akan yang dijalankan
+            wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64    # Mengunduh Hadolint
+            chmod +x /bin/hadolint    # Memberikan izin eksekusi
+      - run:    # Menjalankan perintah linting
+          name: Lint Dockerfile    # Nama langkah untuk linting
+          command: hadolint Dockerfile    # Menjalankan Hadolint pada Dockerfile
 
-  build-app-karsajobs-ui:
-    docker:
-      - image: cimg/node:14.21
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build and Push Image
-          command: |
-            docker build -t ghcr.io/${GITHUB_USERNAME}/karsajobs-ui:latest .
-            echo $GITHUB_TOKEN | docker login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
-            docker push ghcr.io/${GITHUB_USERNAME}/karsajobs-ui:latest
+  build-app-karsajobs-ui:    # Job untuk membangun dan mendorong image
+    docker:    # Menentukan image Docker yang digunakan
+      - image: cimg/node:14.21    # Menggunakan image Node.js versi 14.21
+    steps:    # Langkah-langkah yang akan dijalankan
+      - checkout    # Mengambil kode dari repository
+      - setup_remote_docker    # Menyiapkan Docker untuk build
+      - run:    # Menjalankan perintah build dan push
+          name: Build and Push Image    # Nama langkah untuk build dan push
+          command: |    # Perintah yang dijalankan
+            docker build -t ghcr.io/${GITHUB_USERNAME}/karsajobs-ui:latest .    # Membangun image Docker
+            echo $GITHUB_TOKEN | docker login ghcr.io -u ${GITHUB_USERNAME} --password-stdin    # Login ke GitHub Container Registry
+            docker push ghcr.io/${GITHUB_USERNAME}/karsajobs-ui:latest    # Mendorong image ke registry
 
-workflows:
-  version: 2
-  frontend-pipeline:
-    jobs:
-      - lint-dockerfile
-      - build-app-karsajobs-ui:
-          requires:
-            - lint-dockerfile
-          context: github-credentials
+workflows:    # Mendefinisikan alur kerja
+  version: 2    # Versi workflow
+  frontend-pipeline:    # Nama pipeline untuk frontend
+    jobs:    # Daftar job yang dijalankan
+      - lint-dockerfile    # Menjalankan job lint-dockerfile
+      - build-app-karsajobs-ui:    # Menjalankan job build-app-karsajobs-ui
+          requires:    # Menentukan ketergantungan
+            - lint-dockerfile    # Harus menunggu lint-dockerfile selesai
+          context: github-credentials    # Menggunakan kredensial GitHub yang sudah dibuat sebelumnya
