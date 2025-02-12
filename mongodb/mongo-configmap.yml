@@ -4,8 +4,6 @@ metadata:
   name: mongodb-config    # Nama ConfigMap
   namespace: deployments  # Namespace tempat ConfigMap dibuat
 data:
-  mongo.conf: |          # Konfigurasi MongoDB
-# Konfigurasi penyimpanan MongoDB
+  mongo.conf: |          # Konfigurasi penyimpanan untuk mongodb
     storage:
-      # Lokasi penyimpanan data MongoDB
       dbPath: /data/db   
