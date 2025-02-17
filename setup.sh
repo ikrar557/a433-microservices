@@ -11,35 +11,41 @@ kubectl label namespace deployments istio-injection=enabled
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 
-# Download wait-for-it script
-curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-chmod +x wait-for-it.sh
-
 # Deploy RabbitMQ using Helm
 helm install rabbitmq bitnami/rabbitmq \
   --namespace communications \
   --values rabbitmq/values.yaml
 
 # Wait for RabbitMQ pod to be ready
-echo "Waiting for RabbitMQ pod to be ready..."
-kubectl wait --namespace=communications --for=condition=ready pod -l app.kubernetes.io/name=rabbitmq --timeout=30s
+echo "Waiting for RabbitMQ to be ready..."
+kubectl wait --namespace=communications --for=condition=ready pod -l app.kubernetes.io/name=rabbitmq --timeout=60s
 
-# Get RabbitMQ service IP
-RABBITMQ_HOST=$(kubectl get svc -n communications rabbitmq -o jsonpath='{.spec.clusterIP}')
-
-# Wait for RabbitMQ service to be ready using wait-for-it.sh
-echo "Waiting for RabbitMQ service to be ready..."
-./wait-for-it.sh $RABBITMQ_HOST:5672 -t 30 -- echo "RabbitMQ AMQP port is available"
-./wait-for-it.sh $RABBITMQ_HOST:15672 -t 30 -- echo "RabbitMQ Management port is available"
-
-# Deploy services
+# Deploy services after RabbitMQ is ready
+echo "Deploying microservices..."
 kubectl apply -f order-service/
 kubectl apply -f shipping-service/
+
+# Wait for services to be ready
+echo "Waiting for services to be ready..."
+kubectl wait --namespace=deployments --for=condition=ready pod -l app=orderservice --timeout=30s
+kubectl wait --namespace=deployments --for=condition=ready pod -l app=shippingservice --timeout=30s
 
 # Deploy Istio configurations
 kubectl apply -f istio/
 
-# Cleanup wait-for-it script
-rm wait-for-it.sh
-
 echo "Setup completed!"
+echo "================================================================"
+echo "You can access the services at:"
+echo "----------------------------------------------------------------"
+echo "Order Service (REST API):"
+echo "  - http://localhost:30000/order"
+echo
+echo "Shipping Service (REST API):"
+echo "  - http://localhost:30001"
+echo
+echo "RabbitMQ:"
+echo "  - AMQP: amqp://user:password@localhost:30672"
+echo "  - Management UI: http://localhost:31672"
+echo "  - Username: user"
+echo "  - Password: password"
+echo "================================================================"

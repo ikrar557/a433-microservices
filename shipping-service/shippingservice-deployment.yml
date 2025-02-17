@@ -22,4 +22,4 @@ spec:
         - name: PORT
           value: "3001"
         - name: AMQP_URL
-          value: "amqp://rabbitmq.communications.svc.cluster.local:5672"
+          value: "amqp://user:password@rabbitmq.communications.svc.cluster.local:5672"
