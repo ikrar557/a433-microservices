@@ -1,16 +1,18 @@
 #!/bin/bash
 
-# Delete Istio configurations
+# Menghapus konfigurasi Istio (Gateway dan VirtualService)
 kubectl delete -f istio/
 
-# Delete services
+# Menghapus service dan deployment microservices
+# Menghapus order service (deployment dan service)
 kubectl delete -f order-service/
+# Menghapus shipping service (deployment dan service)
 kubectl delete -f shipping-service/
 
-# Uninstall RabbitMQ Helm release
+# Menghapus RabbitMQ menggunakan Helm
 helm uninstall rabbitmq --namespace communications
 
-# Delete namespaces
+# Menghapus namespace yang telah dibuat (deployments dan communications)
 kubectl delete -f namespace.yml
 
 echo "Cleanup completed!"

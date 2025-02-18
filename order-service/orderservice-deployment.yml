@@ -1,25 +1,44 @@
+# Menentukan versi API Kubernetes untuk Deployment
 apiVersion: apps/v1
+# Menentukan jenis resource Kubernetes (Deployment)
 kind: Deployment
+# Metadata untuk Deployment
 metadata:
+  # Nama Deployment
   name: orderservice
+  # Namespace untuk service yang dibuat
   namespace: deployments
+# Spesifikasi konfigurasi Deployment
 spec:
+  # Jumlah replika pod yang diinginkan
   replicas: 1
+  # Selektor untuk mencocokkan pod
   selector:
     matchLabels:
       app: orderservice
+  # Template untuk pod
   template:
+    # Metadata untuk pod
     metadata:
+      # Label yang diberikan pada pod
       labels:
         app: orderservice
+    # Spesifikasi pod
     spec:
+      # Daftar container dalam pod
       containers:
-      - name: orderservice
+      - # Nama container
+        name: orderservice
+        # Image yang digunakan dari GitHub Container Registry
         image: ghcr.io/ikrar557/orderservice:latest
+        # Port yang diexpose oleh container
         ports:
         - containerPort: 3000
+        # Variabel lingkungan untuk container
         env:
+        # Port untuk aplikasi
         - name: PORT
           value: "3000"
+        # URL untuk koneksi ke RabbitMQ
         - name: AMQP_URL
           value: "amqp://user:password@rabbitmq.communications.svc.cluster.local:5672"

@@ -1,13 +1,25 @@
+# Menentukan versi API Kubernetes untuk Service
 apiVersion: v1
+# Menentukan jenis resource Kubernetes (Service)
 kind: Service
+# Metadata untuk Service
 metadata:
+  # Nama Service
   name: shippingservice
+  # Namespace untuk service yang dibuat
   namespace: deployments
+# Spesifikasi konfigurasi Service
 spec:
+  # Selektor untuk memilih pod
   selector:
     app: shippingservice
+  # Konfigurasi port
   ports:
-  - port: 3001
+  - # Port Service yang dapat diakses dari dalam cluster
+    port: 3001
+    # Port target pada pod
     targetPort: 3001
+    # Port yang dapat diakses dari luar cluster
     nodePort: 30001
+  # Tipe Service 
   type: NodePort

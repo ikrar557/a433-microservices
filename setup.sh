@@ -1,36 +1,36 @@
 #!/bin/bash
 
-# Create namespaces
+# Membuat namespace
 kubectl apply -f namespace.yml
 
-# Install Istio
+# Memasang istio
 istioctl install --set profile=demo -y
 kubectl label namespace deployments istio-injection=enabled
 
-# Add Bitnami Helm repository
+# Menambahkan repository helm untuk rabbitmq
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 
-# Deploy RabbitMQ using Helm
+# Deploy RabbitMQ menggunakan Helm
 helm install rabbitmq bitnami/rabbitmq \
   --namespace communications \
   --values rabbitmq/values.yaml
 
-# Wait for RabbitMQ pod to be ready
+# Menunggu pod dari RabbitMQ siap
 echo "Waiting for RabbitMQ to be ready..."
 kubectl wait --namespace=communications --for=condition=ready pod -l app.kubernetes.io/name=rabbitmq --timeout=60s
 
-# Deploy services after RabbitMQ is ready
+# Deploy services setelah RabbitMQ berhasil dijalankan
 echo "Deploying microservices..."
 kubectl apply -f order-service/
 kubectl apply -f shipping-service/
 
-# Wait for services to be ready
+# Menunggu hingga semua services di jalankan
 echo "Waiting for services to be ready..."
 kubectl wait --namespace=deployments --for=condition=ready pod -l app=orderservice --timeout=30s
 kubectl wait --namespace=deployments --for=condition=ready pod -l app=shippingservice --timeout=30s
 
-# Deploy Istio configurations
+# Deploy konfigurasi dari Istio
 kubectl apply -f istio/
 
 echo "Setup completed!"

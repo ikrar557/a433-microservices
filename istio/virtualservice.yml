@@ -1,19 +1,32 @@
+# Menentukan versi API Istio untuk VirtualService
 apiVersion: networking.istio.io/v1alpha3
+# Menentukan jenis resource Istio (VirtualService)
 kind: VirtualService
+# Metadata untuk VirtualService
 metadata:
+  # Nama VirtualService yang akan dibuat
   name: ecommerce-vs
+  # Namespace tempat VirtualService akan dibuat
   namespace: deployments
+# Spesifikasi konfigurasi VirtualService
 spec:
+  # Host yang akan dilayani ("*" berarti menerima semua host)
   hosts:
   - "*"
+  # Gateway yang terhubung dengan VirtualService ini
   gateways:
   - ecommerce-gateway
+  # Konfigurasi routing HTTP
   http:
   - match:
+    # Mencocokkan URI yang tepat sama dengan /order
     - uri:
         exact: /order
+    # Konfigurasi rute tujuan
     route:
     - destination:
+        # Service yang akan menerima traffic
         host: orderservice
+        # Port service yang dituju
         port:
           number: 3000

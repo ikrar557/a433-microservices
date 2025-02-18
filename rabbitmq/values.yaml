@@ -1,21 +1,39 @@
+# Konfigurasi autentikasi RabbitMQ
 auth:
+  # Username untuk akses RabbitMQ
   username: user
+  # Password untuk akses RabbitMQ
   password: password
 
+# Konfigurasi service Kubernetes
 service:
+  # Tipe service menggunakan NodePort untuk akses dari luar cluster
   type: NodePort
+  # Port internal yang digunakan RabbitMQ
   ports:
+    # Port untuk protokol AMQP
     amqp: 5672
+    # Port untuk management interface
     manager: 15672
+  # Port yang dapat diakses dari luar cluster
   nodePorts:
+    # NodePort untuk AMQP
     amqp: 30672
+    # NodePort untuk management interface
     manager: 31672
 
+# Konfigurasi penyimpanan persisten
 persistence:
+  # Mengaktifkan penyimpanan persisten
   enabled: true
+  # Ukuran penyimpanan
   size: 1Gi
 
+# Konfigurasi sumber daya yang dialokasikan
 resources:
+  # Request resource untuk container
   requests:
+    # Request minimum memory
     memory: 256Mi
+    # Request minimum memory
     cpu: 100m

@@ -1,15 +1,27 @@
+# Menentukan versi API Istio untuk Gateway
 apiVersion: networking.istio.io/v1alpha3
+# Menentukan jenis resource Istio (Gateway)
 kind: Gateway
+# Metadata untuk Gateway
 metadata:
+  # Nama Gateway yang akan dibuat
   name: ecommerce-gateway
+  # Namespace tempat Gateway akan dibuat
   namespace: deployments
+# Spesifikasi konfigurasi Gateway
 spec:
+  # Memilih Istio Ingress Gateway yang akan digunakan
   selector:
     istio: ingressgateway
+  # Konfigurasi server untuk Gateway
   servers:
   - port:
+      # Port yang digunakan
       number: 80
+      # Nama untuk port
       name: http
+      # Protokol yang digunakan
       protocol: HTTP
+    # Host yang diizinkan ("*" berarti menerima semua host)
     hosts:
     - "*"

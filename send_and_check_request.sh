@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# Prompt for buyer name
+# Input nama pembeli dari user
 echo "Enter buyer name:"
 read BUYER_NAME
 
+# Mengirim request POST untuk membuat order baru
 echo "1. Sending POST request to create an order..."
 echo "--------------------------------------------"
 
+# Mengirim HTTP POST request ke order service
 curl -X POST http://localhost:30000/order \
   -H "Content-Type: application/json" \
   -d '{
@@ -18,19 +20,20 @@ curl -X POST http://localhost:30000/order \
     }
 }'
 
+sleep 1
+
+# Memeriksa status antrian RabbitMQ
 echo -e "\n\n2. Checking RabbitMQ Queue Status..."
 echo "--------------------------------------------"
 
-# Get RabbitMQ pod name
 RABBITMQ_POD=$(kubectl get pods -n communications -l app.kubernetes.io/name=rabbitmq -o jsonpath='{.items[0].metadata.name}')
-
-# Check queue status
 kubectl exec -n communications $RABBITMQ_POD -- rabbitmqctl list_queues
 
+# Memeriksa log shipping service
 echo -e "\n\n3. Checking Shipping Service Logs..."
 echo "--------------------------------------------"
 
-# Get shipping service logs
+# Mengambil log dari shipping service
 kubectl logs -n deployments -l app=shippingservice --tail=20
 
 echo -e "\nTest completed!"
