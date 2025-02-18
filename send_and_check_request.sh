@@ -26,8 +26,8 @@ sleep 1
 echo -e "\n\n2. Checking RabbitMQ Queue Status..."
 echo "--------------------------------------------"
 
-RABBITMQ_POD=$(kubectl get pods -n communications -l app.kubernetes.io/name=rabbitmq -o jsonpath='{.items[0].metadata.name}')
-kubectl exec -n communications $RABBITMQ_POD -- rabbitmqctl list_queues
+RABBITMQ_POD=$(kubectl get pods -n deployments -l app=rabbitmq -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -n deployments $RABBITMQ_POD -- rabbitmqctl list_queues
 
 # Memeriksa log shipping service
 echo -e "\n\n3. Checking Shipping Service Logs..."

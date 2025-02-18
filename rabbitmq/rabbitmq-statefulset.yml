@@ -1,0 +1,72 @@
+# Menentukan versi API Kubernetes untuk StatefulSet
+apiVersion: apps/v1
+# Menentukan jenis resource Kubernetes (StatefulSet)
+kind: StatefulSet
+# Metadata untuk StatefulSet
+metadata:
+  # Nama StatefulSet
+  name: rabbitmq
+  # Namespace tempat StatefulSet akan dibuat
+  namespace: deployments
+# Spesifikasi konfigurasi StatefulSet
+spec:
+  # Nama service yang terkait dengan StatefulSet
+  serviceName: rabbitmq
+  # Jumlah replika pod yang diinginkan
+  replicas: 1
+  # Selektor untuk mencocokkan pod
+  selector:
+    matchLabels:
+      app: rabbitmq
+  # Template untuk membuat pod
+  template:
+    # Metadata untuk pod
+    metadata:
+      # Label yang diberikan pada pod
+      labels:
+        app: rabbitmq
+    # Spesifikasi pod
+    spec:
+      # Daftar container dalam pod
+      containers:
+      - # Nama container
+        name: rabbitmq
+        # Image Docker yang digunakan
+        image: rabbitmq:3.11-management
+        # Port yang diexpose oleh container
+        ports:
+        - containerPort: 5672
+          name: amqp
+        - containerPort: 15672
+          name: management
+        # Environment variabel untuk container
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "user"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "password"
+        # Mengecek kesiapan pod sebelum dijalankan
+        readinessProbe:
+          tcpSocket:
+            port: amqp
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        # Mengecek kesehatan pod
+        livenessProbe:
+          tcpSocket:
+            port: amqp
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        # Konfigurasi volume yang dimount ke container
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+  # Template untuk membuat volume persisten
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

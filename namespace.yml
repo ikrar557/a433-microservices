@@ -6,12 +6,3 @@ kind: Namespace
 metadata:
   # Nama namespace untuk deployment aplikasi
   name: deployments
----
-# Menentukan versi API Kubernetes yang digunakan
-apiVersion: v1
-# Menentukan jenis resource Kubernetes yang akan dibuat (Namespace)
-kind: Namespace
-# Mendefinisikan metadata
-metadata:
-  # Nama namespace untuk komunikasi (RabbitMQ)
-  name: communications

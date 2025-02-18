@@ -1,0 +1,35 @@
+# Menentukan versi API Kubernetes untuk Service
+apiVersion: v1
+# Menentukan jenis resource Kubernetes (Service)
+kind: Service
+# Metadata untuk Service
+metadata:
+  # Nama Service
+  name: rabbitmq
+  # Namespace tempat Service akan dibuat
+  namespace: deployments
+# Spesifikasi konfigurasi Service
+spec:
+  # Tipe service menggunakan NodePort untuk akses dari luar cluster
+  type: NodePort
+  # Selektor untuk mencocokkan pod yang akan dilayani
+  selector:
+    app: rabbitmq
+  # Daftar port yang diexpose oleh service
+  ports:
+  # Konfigurasi port untuk AMQP
+  - name: amqp
+    # Port internal service
+    port: 5672
+    # Port container yang dituju
+    targetPort: 5672
+    # Port yang dapat diakses dari luar cluster
+    nodePort: 30672
+  # Konfigurasi port untuk management interface
+  - name: management
+    # Port internal service
+    port: 15672
+    # Port container yang dituju
+    targetPort: 15672
+    # Port yang dapat diakses dari luar cluster
+    nodePort: 31672

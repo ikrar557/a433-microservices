@@ -41,4 +41,4 @@ spec:
           value: "3001"
         # URL untuk koneksi ke RabbitMQ
         - name: AMQP_URL
-          value: "amqp://user:password@rabbitmq.communications.svc.cluster.local:5672"
+          value: "amqp://user:password@rabbitmq.deployments.svc.cluster.local:5672"

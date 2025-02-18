@@ -7,18 +7,13 @@ kubectl apply -f namespace.yml
 istioctl install --set profile=demo -y
 kubectl label namespace deployments istio-injection=enabled
 
-# Menambahkan repository helm untuk rabbitmq
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-
-# Deploy RabbitMQ menggunakan Helm
-helm install rabbitmq bitnami/rabbitmq \
-  --namespace communications \
-  --values rabbitmq/values.yaml
+# Deploy RabbitMQ StatefulSet dan Service
+echo "Deploying RabbitMQ..."
+kubectl apply -f rabbitmq/
 
 # Menunggu pod dari RabbitMQ siap
 echo "Waiting for RabbitMQ to be ready..."
-kubectl wait --namespace=communications --for=condition=ready pod -l app.kubernetes.io/name=rabbitmq --timeout=60s
+kubectl wait --namespace=communications --for=condition=ready pod -l app=rabbitmq --timeout=60s
 
 # Deploy services setelah RabbitMQ berhasil dijalankan
 echo "Deploying microservices..."
